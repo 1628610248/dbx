@@ -2,7 +2,7 @@ import { withEnglishFallback } from "./fallback";
 
 export default withEnglishFallback({
   app: {
-    name: "DBX",
+    name: "DBX For Oracle",
   },
   auth: {
     setupTitle: "设置访问密码",

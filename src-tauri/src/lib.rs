@@ -581,13 +581,13 @@ fn locale_family(locale: &str) -> LocaleFamily {
 
 fn tray_menu_labels_for_locale(locale: &str) -> (&'static str, &'static str) {
     match locale_family(locale) {
-        LocaleFamily::SimplifiedChinese => ("显示 DBX", "退出 DBX"),
-        LocaleFamily::TraditionalChinese => ("顯示 DBX", "退出 DBX"),
-        LocaleFamily::Japanese => ("DBXを表示", "DBXを終了"),
-        LocaleFamily::Spanish => ("Mostrar DBX", "Salir de DBX"),
-        LocaleFamily::Italian => ("Mostra DBX", "Esci da DBX"),
-        LocaleFamily::Portuguese => ("Mostrar DBX", "Sair do DBX"),
-        LocaleFamily::English => ("Show DBX", "Quit DBX"),
+        LocaleFamily::SimplifiedChinese => ("显示 DBX For Oracle", "退出 DBX For Oracle"),
+        LocaleFamily::TraditionalChinese => ("顯示 DBX For Oracle", "退出 DBX For Oracle"),
+        LocaleFamily::Japanese => ("DBX For Oracleを表示", "DBX For Oracleを終了"),
+        LocaleFamily::Spanish => ("Mostrar DBX For Oracle", "Salir de DBX For Oracle"),
+        LocaleFamily::Italian => ("Mostra DBX For Oracle", "Esci da DBX For Oracle"),
+        LocaleFamily::Portuguese => ("Mostrar DBX For Oracle", "Sair do DBX For Oracle"),
+        LocaleFamily::English => ("Show DBX For Oracle", "Quit DBX For Oracle"),
     }
 }
 
@@ -1147,9 +1147,12 @@ pub fn run() {
 
     let builder = builder
         .plugin(tauri_plugin_shell::init())
-        .plugin(tauri_plugin_updater::Builder::new().build())
-        .plugin(tauri_plugin_process::init())
-        .plugin(tauri_plugin_window_state::Builder::default().build());
+        .plugin(tauri_plugin_process::init());
+
+    #[cfg(not(debug_assertions))]
+    let builder = builder.plugin(tauri_plugin_updater::Builder::new().build());
+
+    let builder = builder.plugin(tauri_plugin_window_state::Builder::default().build());
 
     // macOS app menu (Cmd+Q / Dock Quit). Skip on Linux/Windows so an empty menu bar
     // is not installed where there was none before.
@@ -1244,6 +1247,7 @@ pub fn run() {
             app.manage(commands::external_sql::ExternalSqlOpenState::default());
             app.manage(commands::external_db::ExternalDbOpenState::default());
             app.manage(commands::deep_link::DeepLinkOpenState::default());
+            #[cfg(not(debug_assertions))]
             app.manage(commands::update::PendingUpdateState::default());
             app.manage(commands::ssh_prompt::SshPromptState::new());
             commands::ssh_prompt::install_ssh_prompt_bridge(app.handle());
@@ -1785,10 +1789,15 @@ pub fn run() {
             commands::history::delete_history_entry,
             commands::mcp::check_mcp_server_status,
             commands::mcp::install_mcp_server,
+            #[cfg(not(debug_assertions))]
             commands::update::check_for_updates,
+            #[cfg(not(debug_assertions))]
             commands::update::fetch_changelog,
+            #[cfg(not(debug_assertions))]
             commands::update::get_system_proxy_url,
+            #[cfg(not(debug_assertions))]
             commands::update::download_update,
+            #[cfg(not(debug_assertions))]
             commands::update::install_downloaded_update,
             commands::transfer::start_transfer,
             commands::transfer::preview_transfer_ownership,
