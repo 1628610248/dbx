@@ -47,9 +47,7 @@ pub mod table_import;
 pub mod text_export;
 pub mod transfer;
 pub mod tunnel_profiles;
-#[cfg(not(debug_assertions))]
 pub mod update;
-#[cfg(not(debug_assertions))]
 mod update_portable;
 pub mod window_controls;
 pub mod xlsx_export;

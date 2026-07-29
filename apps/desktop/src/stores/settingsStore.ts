@@ -614,7 +614,7 @@ export const DEFAULT_EDITOR_SETTINGS: EditorSettings = {
   disconnectTabHandlingMode: "close-tabs",
   reuseDataTab: false,
   prefillNewQueryWithSelect: true,
-  updateNotificationsEnabled: false,
+  updateNotificationsEnabled: true,
   sidebarHiddenTablePrefixes: [],
   sidebarObjectInfoMode: "comment-aligned",
   sidebarAllowHorizontalScroll: false,

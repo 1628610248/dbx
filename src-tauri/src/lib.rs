@@ -1147,12 +1147,9 @@ pub fn run() {
 
     let builder = builder
         .plugin(tauri_plugin_shell::init())
-        .plugin(tauri_plugin_process::init());
-
-    #[cfg(not(debug_assertions))]
-    let builder = builder.plugin(tauri_plugin_updater::Builder::new().build());
-
-    let builder = builder.plugin(tauri_plugin_window_state::Builder::default().build());
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_window_state::Builder::default().build());
 
     // macOS app menu (Cmd+Q / Dock Quit). Skip on Linux/Windows so an empty menu bar
     // is not installed where there was none before.
@@ -1247,7 +1244,6 @@ pub fn run() {
             app.manage(commands::external_sql::ExternalSqlOpenState::default());
             app.manage(commands::external_db::ExternalDbOpenState::default());
             app.manage(commands::deep_link::DeepLinkOpenState::default());
-            #[cfg(not(debug_assertions))]
             app.manage(commands::update::PendingUpdateState::default());
             app.manage(commands::ssh_prompt::SshPromptState::new());
             commands::ssh_prompt::install_ssh_prompt_bridge(app.handle());
@@ -1789,15 +1785,10 @@ pub fn run() {
             commands::history::delete_history_entry,
             commands::mcp::check_mcp_server_status,
             commands::mcp::install_mcp_server,
-            #[cfg(not(debug_assertions))]
             commands::update::check_for_updates,
-            #[cfg(not(debug_assertions))]
             commands::update::fetch_changelog,
-            #[cfg(not(debug_assertions))]
             commands::update::get_system_proxy_url,
-            #[cfg(not(debug_assertions))]
             commands::update::download_update,
-            #[cfg(not(debug_assertions))]
             commands::update::install_downloaded_update,
             commands::transfer::start_transfer,
             commands::transfer::preview_transfer_ownership,
