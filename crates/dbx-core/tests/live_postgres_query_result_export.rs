@@ -57,6 +57,7 @@ fn live_postgres_config(
         redis_cluster_nodes: String::new(),
         redis_key_separator: dbx_core::models::connection::default_redis_key_separator(),
         redis_scan_page_size: None,
+        redis_database_aliases: Default::default(),
         etcd_endpoints: String::new(),
         gbase_server: String::new(),
         informix_server: String::new(),
@@ -67,6 +68,7 @@ fn live_postgres_config(
         read_only: false,
         is_production: false,
         production_databases: vec![],
+        show_system_schemas: false,
         database_info: None,
     }
 }
@@ -135,6 +137,10 @@ async fn live_postgres_query_result_export_uses_single_streamed_query() {
         client_session_id: None,
         execution_id: Some(format!("live-postgres-query-export-{suffix}")),
         date_time_format: None,
+        export_table_name: None,
+        export_column_types: None,
+        column_comments: None,
+        numeric_column_right_align: false,
     };
     let done_seen = AtomicBool::new(false);
     let result = export_query_result_core(&state, &request, None, |progress| {
@@ -210,6 +216,10 @@ async fn live_postgres_query_result_xlsx_preserves_temporal_cell_types() {
         client_session_id: Some(format!("live-postgres-xlsx-temporal-{suffix}")),
         execution_id: Some(format!("live-postgres-xlsx-temporal-{suffix}")),
         date_time_format: None,
+        export_table_name: None,
+        export_column_types: None,
+        column_comments: None,
+        numeric_column_right_align: false,
     };
 
     export_query_result_core(&state, &request, None, |_| {}).await.expect("export temporal XLSX");
@@ -278,6 +288,10 @@ async fn live_postgres_truncated_batch_result_export_replays_safe_temp_setup() {
         client_session_id: Some(format!("temp-export-csv-{short_suffix}")),
         execution_id: Some(format!("temp-export-csv-{short_suffix}")),
         date_time_format: None,
+        export_table_name: None,
+        export_column_types: None,
+        column_comments: None,
+        numeric_column_right_align: false,
     };
     let csv_rows = AtomicU64::new(0);
     export_query_result_core(&state, &request, None, |progress| {
@@ -349,6 +363,10 @@ async fn live_postgres_xlsx_export_can_outlive_query_timeout_while_rows_keep_arr
         client_session_id: None,
         execution_id: Some(format!("live-postgres-query-export-timeout-{suffix}")),
         date_time_format: None,
+        export_table_name: None,
+        export_column_types: None,
+        column_comments: None,
+        numeric_column_right_align: false,
     };
     let rows_exported = AtomicU64::new(0);
     let done_seen = AtomicBool::new(false);
@@ -411,6 +429,10 @@ async fn live_postgres_stream_still_times_out_without_progress_and_recovers() {
         client_session_id: None,
         execution_id: Some(format!("live-postgres-query-export-stall-{suffix}")),
         date_time_format: None,
+        export_table_name: None,
+        export_column_types: None,
+        column_comments: None,
+        numeric_column_right_align: false,
     };
     let started_at = Instant::now();
     let result = export_query_result_core(&state, &request, None, |_| {}).await;
