@@ -1,0 +1,13 @@
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.oracle.database.jdbc:ojdbc8:21.15.0.0'
+    implementation 'com.oracle.database.nls:orai18n:21.15.0.0'
+    implementation 'com.oracle.database.xml:xdb:21.15.0.0'
+    implementation 'com.oracle.database.xml:xmlparserv2:21.15.0.0'
+}
+
+tasks.named('shadowJar') {
+    manifest {
+        attributes('Agent-Label': 'Oracle (OJDBC8)', 'Main-Class': 'com.dbx.agent.oraclejdbc8.OracleJdbc8Agent')
+    }
+}
