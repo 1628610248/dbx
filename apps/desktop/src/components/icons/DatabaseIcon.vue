@@ -28,10 +28,6 @@ const assetIcons: Record<string, string> = {
   elasticsearch: "elasticsearch",
   easysearch: "easysearch",
   oracle: "oracle",
-  "oracle-10g": "oracle",
-  "oracle-legacy": "oracle",
-  "oracle-jdbc17": "oracle",
-  "oracle-jdbc8": "oracle",
   oracle_10g: "oracle",
   oracle_legacy: "oracle",
   sqlserver: "sqlserver",
@@ -107,7 +103,16 @@ const assetIcons: Record<string, string> = {
 };
 
 const normalizedType = computed(() => props.dbType.toLowerCase().replace(/[\s-]+/g, "_"));
-const assetName = computed(() => assetIcons[normalizedType.value]);
+const assetName = computed(() => {
+  const direct = assetIcons[normalizedType.value];
+  if (direct) return direct;
+  // Fallback: strip known community-driver suffixes (e.g. oracle-jdbc17 → oracle)
+  const stripped = normalizedType.value.replace(/(-jdbc\d+|-[a-z]+\d+|-10g|-legacy)$/i, "");
+  if (stripped !== normalizedType.value) {
+    return assetIcons[stripped];
+  }
+  return undefined;
+});
 const useLightIconInDarkMode = computed(() => normalizedType.value === "easysearch" && isDark.value);
 const assetSrc = computed(() => {
   if (!assetName.value) return "";
