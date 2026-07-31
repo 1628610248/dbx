@@ -1,4 +1,4 @@
-import type { ConnectionConfig, DatabaseType, TreeNodeType } from "@/types/database";
+import type { ConnectionConfig, TreeNodeType } from "@/types/database";
 
 export type DatabaseNamespaceCreationTarget = "database" | "schema" | "attach" | "special";
 
@@ -14,7 +14,7 @@ export interface DatabaseNamespaceCreationMatrixEntry {
 type CreationConnection = (Pick<ConnectionConfig, "db_type" | "driver_profile" | "read_only"> & Partial<Pick<ConnectionConfig, "host" | "password">>) | undefined;
 
 // Keep creation target-specific: many products expose schemas, files, or provider-managed namespaces instead of a top-level database.
-export const DATABASE_NAMESPACE_CREATION_MATRIX = {
+export const DATABASE_NAMESPACE_CREATION_MATRIX: Record<string, DatabaseNamespaceCreationMatrixEntry> = {
   mysql: { connection: "database" },
   postgres: { connection: "database", database: "schema" },
   sqlite: { connection: "attach" },
@@ -83,7 +83,7 @@ export const DATABASE_NAMESPACE_CREATION_MATRIX = {
   jdbc: { deferred: "generic JDBC does not expose a reliable dialect-specific create target" },
   mq: { deferred: "message queue namespaces are handled by MQ admin panels" },
   nacos: { deferred: "Nacos namespace creation already uses the Nacos admin flow" },
-} satisfies Record<DatabaseType, DatabaseNamespaceCreationMatrixEntry>;
+};
 
 export function connectionNamespaceCreationTarget(connection: CreationConnection): ConnectionCreationTarget | null {
   if (!connection || connection.read_only) return null;

@@ -1,6 +1,6 @@
 export { DATABASE_CATEGORIES as DRIVER_CATEGORIES } from "@/lib/database/databaseRegistry";
-export type { DatabaseCategory as DriverCategoryKey } from "@/lib/database/databaseRegistry";
 import { AGENT_CATEGORY_MAP, DATABASE_CATEGORIES, type DatabaseCategory } from "@/lib/database/databaseRegistry";
+export type { DatabaseCategory as DriverCategoryKey };
 
 const VALID_CATEGORY_KEYS: ReadonlySet<string> = new Set(DATABASE_CATEGORIES.map((cat) => cat.key));
 
@@ -12,12 +12,12 @@ const EXTRA_AGENT_DRIVER_CATEGORIES: Readonly<Record<string, DatabaseCategory>> 
   "sqlserver-legacy": "sql",
 };
 
-export const AGENT_DRIVER_CATEGORY_MAP: Readonly<Record<string, DatabaseCategory>> = {
+export const AGENT_DRIVER_CATEGORY_MAP: Readonly<Record<string, string>> = {
   ...AGENT_CATEGORY_MAP,
   ...EXTRA_AGENT_DRIVER_CATEGORIES,
 };
 
-export const getCategoryForAgentDriver = (dbType: string): DriverCategoryKey | "all" => AGENT_DRIVER_CATEGORY_MAP[dbType] ?? "all";
+export const getCategoryForAgentDriver = (dbType: string): string => AGENT_DRIVER_CATEGORY_MAP[dbType] ?? "all";
 
 const collectUnmapped = (driverKeys: string[]): string[] => driverKeys.filter((key) => !(key in AGENT_DRIVER_CATEGORY_MAP));
 

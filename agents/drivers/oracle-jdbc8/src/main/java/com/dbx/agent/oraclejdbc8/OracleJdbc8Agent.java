@@ -503,7 +503,7 @@ public final class OracleJdbc8Agent extends BaseDatabaseAgent {
         if (connectionString != null && !connectionString.trim().isEmpty()) {
             return connectionString;
         }
-        return "jdbc:oracle:thin:@" + params.getHost() + ":" + params.getPort() + "/" + serviceName(params);
+        return "jdbc:oracle:thin:@//" + params.getHost() + ":" + params.getPort() + "/" + serviceName(params);
     }
 
     private static Properties connectionProperties(ConnectParams params) {

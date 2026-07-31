@@ -1,4 +1,5 @@
-export type { DatabaseType } from "@/lib/database/databaseRegistry";
+import type { DatabaseType } from "@/lib/database/databaseRegistry";
+export type { DatabaseType };
 
 export function isElasticsearchCompatibleDatabaseType(dbType?: DatabaseType): boolean {
   return dbType === "elasticsearch" || dbType === "easysearch";

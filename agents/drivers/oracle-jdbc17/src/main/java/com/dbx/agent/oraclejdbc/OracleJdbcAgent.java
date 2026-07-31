@@ -614,7 +614,7 @@ public class OracleJdbcAgent extends BaseDatabaseAgent {
         if (connectionString != null && !connectionString.trim().isEmpty()) {
             return connectionString;
         }
-        return "jdbc:oracle:thin:@" + params.getHost() + ":" + params.getPort() + "/" + serviceName;
+        return "jdbc:oracle:thin:@//" + params.getHost() + ":" + params.getPort() + "/" + serviceName;
     }
 
     private static String serviceName(ConnectParams params) {

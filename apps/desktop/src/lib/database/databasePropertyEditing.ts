@@ -15,7 +15,7 @@ type SchemaNode = Pick<{ type: TreeNodeType; database?: string | null; schema?: 
 
 const POSTGRES_COMMENT_TYPES = new Set<DatabaseType>(["postgres", "gaussdb", "kwdb", "kingbase", "highgo", "uxdb", "vastbase", "opengauss", "yashandb"]);
 
-export const DATABASE_PROPERTY_EDITING_MATRIX = {
+export const DATABASE_PROPERTY_EDITING_MATRIX: Record<string, DatabasePropertyEditingEntry> = {
   mysql: { database: ["charsetCollation"] },
   postgres: { database: ["databaseComment"], schema: ["schemaComment"] },
   sqlite: { deferred: "file-backed database properties are not edited in-place" },
@@ -84,7 +84,7 @@ export const DATABASE_PROPERTY_EDITING_MATRIX = {
   jdbc: { deferred: "generic JDBC does not expose reliable dialect-specific properties" },
   mq: { deferred: "message queue namespaces are handled by MQ admin panels" },
   nacos: { deferred: "Nacos namespace editing already uses the Nacos admin flow" },
-} satisfies Record<DatabaseType, DatabasePropertyEditingEntry>;
+};
 
 function entryFor(connection: PropertyEditConnection): DatabasePropertyEditingEntry | null {
   if (!connection || connection.read_only) return null;

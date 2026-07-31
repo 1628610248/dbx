@@ -1816,6 +1816,12 @@ function switchGbaseProfile(profile: "gbase8a" | "gbase8s") {
   resetTestState();
 }
 
+function switchOracleProfile(profile: "oracle" | "oracle-jdbc17" | "oracle-jdbc8") {
+  applyProfile(profile, false);
+  selectedType.value = "oracle";
+  resetTestState();
+}
+
 watch(
   [() => props.editConfig, open],
   ([config, isOpen]) => {
@@ -2137,6 +2143,7 @@ const iconTypeMap: Record<string, string> = {
   rabbitmq: "rabbitmq",
   nacos: "nacos",
   dm: "dm",
+  dameng: "dm",
   h2: "h2",
   snowflake: "snowflake",
   trino: "trino",
@@ -2174,12 +2181,11 @@ const dialogOnlyGroups: Record<string, string[]> = {
   sql: ["jdbcx", "custom_mysql", "custom_postgres"],
   domestic: ["dm"],
 };
-const dbCategoryDefinitions: Array<{ key: DbCategoryKey; titleKey: string; optionValues: readonly string[] }> =
-  DATABASE_CATEGORIES.map((cat) => ({
-    key: cat.key,
-    titleKey: cat.titleKey,
-    optionValues: [...(DB_CATEGORY_GROUPS[cat.key] ?? []), ...(dialogOnlyGroups[cat.key] ?? [])],
-  }));
+const dbCategoryDefinitions: Array<{ key: DbCategoryKey; titleKey: string; optionValues: readonly string[] }> = DATABASE_CATEGORIES.map((cat) => ({
+  key: cat.key,
+  titleKey: cat.titleKey,
+  optionValues: [...(DB_CATEGORY_GROUPS[cat.key] ?? []), ...(dialogOnlyGroups[cat.key] ?? [])],
+}));
 
 // Keep the picker exhaustive as database drivers are added or reorganized.
 assertCompleteDatabaseCategories(
@@ -5803,6 +5809,15 @@ function openExternalUrl(url: string) {
                       </div>
                     </template>
                   </template>
+
+                  <div v-if="form.db_type === 'oracle'" class="grid grid-cols-4 items-center gap-4">
+                    <Label :class="connectionLabelSmallClass">{{ t("connection.version") }}</Label>
+                    <div class="col-span-3 flex gap-2">
+                      <Button size="sm" :variant="form.driver_profile === 'oracle' || !form.driver_profile ? 'default' : 'outline'" @click="switchOracleProfile('oracle')"> Go </Button>
+                      <Button size="sm" :variant="form.driver_profile === 'oracle-jdbc17' ? 'default' : 'outline'" @click="switchOracleProfile('oracle-jdbc17')"> OJDBC17 </Button>
+                      <Button size="sm" :variant="form.driver_profile === 'oracle-jdbc8' ? 'default' : 'outline'" @click="switchOracleProfile('oracle-jdbc8')"> OJDBC8 </Button>
+                    </div>
+                  </div>
 
                   <div v-if="form.db_type === 'oracle'" class="grid grid-cols-4 items-center gap-4">
                     <Label :class="connectionLabelSmallClass">{{ t("connection.mode") }}</Label>
