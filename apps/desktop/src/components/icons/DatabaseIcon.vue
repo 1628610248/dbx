@@ -30,6 +30,8 @@ const assetIcons: Record<string, string> = {
   oracle: "oracle",
   "oracle-10g": "oracle",
   "oracle-legacy": "oracle",
+  "oracle-jdbc17": "oracle",
+  "oracle-jdbc8": "oracle",
   oracle_10g: "oracle",
   oracle_legacy: "oracle",
   sqlserver: "sqlserver",
