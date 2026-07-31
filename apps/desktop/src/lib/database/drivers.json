@@ -45,7 +45,12 @@
   { "key": "tdsql", "label": "TDSQL", "icon": "tdsql", "category": "domestic", "defaultPort": 3306, "defaultUser": "root" },
   { "key": "polardb", "label": "PolarDB", "icon": "polardb.webp", "category": "domestic", "defaultPort": 3306, "defaultUser": "root" },
   { "key": "greatsql", "label": "GreatSQL", "icon": "greatsql.webp", "category": "domestic", "defaultPort": 3306, "defaultUser": "root" },
-  { "key": "gbase", "label": "GBase", "icon": "gbase.png", "category": "domestic", "defaultPort": 5258, "defaultUser": "gbasedbt" },
+  { "key": "gbase", "label": "GBase", "icon": "gbase.png", "category": "domestic", "defaultPort": 5258, "defaultUser": "gbasedbt",
+    "drivers": [
+      { "profile": "gbase8a", "label": "GBase 8a", "agentKey": "gbase8a" },
+      { "profile": "gbase8s", "label": "GBase 8s", "agentKey": "gbase8s" }
+    ]
+  },
   { "key": "kingbase", "label": "人大金仓 KingbaseES", "icon": "kingbase", "category": "domestic", "defaultPort": 54321, "defaultUser": "system" },
   { "key": "highgo", "label": "瀚高 HighGo", "icon": "highgo.png", "category": "domestic", "defaultPort": 5866, "defaultUser": "sysdba" },
   { "key": "uxdb", "label": "优炫 UXDB", "icon": "uxdb", "category": "domestic", "defaultPort": 5432, "defaultUser": "uxdb" },

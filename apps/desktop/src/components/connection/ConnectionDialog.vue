@@ -2166,7 +2166,6 @@ const extraDbOptions: DbOption[] = [
   { value: "jdbcx", label: "JDBCX" },
   { value: "custom_mysql", label: "Custom (MySQL)" },
   { value: "custom_postgres", label: "Custom (PostgreSQL)" },
-  { value: "dremio", label: "Dremio" },
 ];
 const dbOptions: DbOption[] = [...REGISTRY_OPTIONS, ...extraDbOptions];
 
@@ -2174,7 +2173,6 @@ const dbOptions: DbOption[] = [...REGISTRY_OPTIONS, ...extraDbOptions];
 const dialogOnlyGroups: Record<string, string[]> = {
   sql: ["jdbcx", "custom_mysql", "custom_postgres"],
   domestic: ["dm"],
-  analytics: ["dremio"],
 };
 const dbCategoryDefinitions: Array<{ key: DbCategoryKey; titleKey: string; optionValues: readonly string[] }> =
   DATABASE_CATEGORIES.map((cat) => ({
