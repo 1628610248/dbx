@@ -2,8 +2,20 @@
  * 数据库注册表 — 前端唯一配置入口。
  *
  * 新增数据库只需在这里加一条记录，无需修改 types、图标映射、分类等文件。
+ * 一个数据库有多个驱动实现时，在 `drivers` 数组中声明。
  * 分类标题的 i18n key 在 `connection.databaseCategory*` 中定义。
  */
+
+/** 驱动变体（同一数据库的不同 JDBC/原生实现） */
+export interface DriverProfile {
+  /** 连接配置中的 driver_profile 值 */
+  profile: string;
+  /** 驱动显示名 */
+  label: string;
+  /** Agent 驱动 key（对应 agents/drivers/<key> 目录） */
+  agentKey: string;
+}
+
 export interface DatabaseDef {
   /** 数据库类型标识，同时作为 DatabaseType 联合类型的一员 */
   key: string;
@@ -17,6 +29,8 @@ export interface DatabaseDef {
   defaultPort: number;
   /** 默认用户名 */
   defaultUser: string;
+  /** 可选：替代驱动实现（如 Oracle 有 go-ora / OJDBC17 / OJDBC8） */
+  drivers?: readonly DriverProfile[];
 }
 
 /** 数据库分类 */
@@ -55,7 +69,12 @@ export const DATABASE_REGISTRY = [
   { key: "postgres", label: "PostgreSQL", icon: "postgres", category: "sql", defaultPort: 5432, defaultUser: "postgres" },
   { key: "cloudberry", label: "Apache Cloudberry", icon: "cloudberry", category: "sql", defaultPort: 5432, defaultUser: "postgres" },
   { key: "cockroachdb", label: "CockroachDB", icon: "cockroachdb", category: "sql", defaultPort: 26257, defaultUser: "root" },
-  { key: "oracle", label: "Oracle", icon: "oracle", category: "sql", defaultPort: 1521, defaultUser: "system" },
+  { key: "oracle", label: "Oracle", icon: "oracle", category: "sql", defaultPort: 1521, defaultUser: "system",
+    drivers: [
+      { profile: "oracle-jdbc17", label: "Oracle (OJDBC17)", agentKey: "oracle-jdbc17" },
+      { profile: "oracle-jdbc8", label: "Oracle (OJDBC8)", agentKey: "oracle-jdbc8" },
+    ] as const,
+  },
   { key: "sqlserver", label: "SQL Server", icon: "sqlserver", category: "sql", defaultPort: 1433, defaultUser: "sa" },
   { key: "db2", label: "IBM DB2", icon: "db2", category: "sql", defaultPort: 50000, defaultUser: "db2admin" },
   { key: "informix", label: "IBM Informix", icon: "informix", category: "sql", defaultPort: 9088, defaultUser: "informix" },
@@ -175,16 +194,46 @@ export const DB_CATEGORY_GROUPS: Readonly<Record<DatabaseCategory, string[]>> = 
   return groups as Record<DatabaseCategory, string[]>;
 })();
 
-/** 生成 driverProfiles 映射 */
+/** 生成 driverProfiles 映射（含驱动变体） */
 export const DRIVER_PROFILES: Readonly<Record<string, { type: DatabaseType; port: number; user: string; label: string; icon: string }>> =
-  Object.fromEntries(
-    DATABASE_REGISTRY.map((d) => [
-      d.key,
-      { type: d.key, port: d.defaultPort, user: d.defaultUser, label: d.label, icon: d.icon },
-    ]),
-  ) as Readonly<Record<string, { type: DatabaseType; port: number; user: string; label: string; icon: string }>>;
+  (() => {
+    const entries: Array<[string, { type: DatabaseType; port: number; user: string; label: string; icon: string }]> = [];
+    for (const db of DATABASE_REGISTRY) {
+      // 主驱动
+      entries.push([db.key, { type: db.key, port: db.defaultPort, user: db.defaultUser, label: db.label, icon: db.icon }]);
+      // 驱动变体（如 oracle-jdbc17）
+      if (db.drivers) {
+        for (const drv of db.drivers) {
+          entries.push([drv.profile, { type: db.key, port: db.defaultPort, user: db.defaultUser, label: drv.label, icon: db.icon }]);
+        }
+      }
+    }
+    return Object.fromEntries(entries) as Readonly<Record<string, { type: DatabaseType; port: number; user: string; label: string; icon: string }>>;
+  })();
 
-/** Agent 驱动 → 分类映射 */
-export const AGENT_CATEGORY_MAP: Readonly<Record<string, DatabaseCategory>> = Object.fromEntries(
-  DATABASE_REGISTRY.map((d) => [d.key, d.category]),
-);
+/** Agent 驱动 → 分类映射（包含变体的 agentKey） */
+export const AGENT_CATEGORY_MAP: Readonly<Record<string, DatabaseCategory>> = (() => {
+  const map: Record<string, DatabaseCategory> = {};
+  for (const db of DATABASE_REGISTRY) {
+    map[db.key] = db.category;
+    if (db.drivers) {
+      for (const drv of db.drivers) {
+        map[drv.agentKey] = db.category;
+      }
+    }
+  }
+  return map;
+})();
+
+/** 驱动变体 → 数据库 key 映射 */
+export const DRIVER_PROFILE_DB_MAP: Readonly<Record<string, string>> = (() => {
+  const map: Record<string, string> = {};
+  for (const db of DATABASE_REGISTRY) {
+    if (db.drivers) {
+      for (const drv of db.drivers) {
+        map[drv.profile] = db.key;
+      }
+    }
+  }
+  return map;
+})();
