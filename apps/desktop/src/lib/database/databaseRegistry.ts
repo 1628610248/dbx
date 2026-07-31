@@ -198,10 +198,8 @@ export const DB_CATEGORY_GROUPS: Readonly<Record<DatabaseCategory, string[]>> = 
 export const DRIVER_PROFILES: Readonly<Record<string, { type: DatabaseType; port: number; user: string; label: string; icon: string }>> =
   (() => {
     const entries: Array<[string, { type: DatabaseType; port: number; user: string; label: string; icon: string }]> = [];
-    for (const db of DATABASE_REGISTRY) {
-      // 主驱动
+    for (const db of DATABASE_REGISTRY as readonly DatabaseDef[]) {
       entries.push([db.key, { type: db.key, port: db.defaultPort, user: db.defaultUser, label: db.label, icon: db.icon }]);
-      // 驱动变体（如 oracle-jdbc17）
       if (db.drivers) {
         for (const drv of db.drivers) {
           entries.push([drv.profile, { type: db.key, port: db.defaultPort, user: db.defaultUser, label: drv.label, icon: db.icon }]);
@@ -214,7 +212,7 @@ export const DRIVER_PROFILES: Readonly<Record<string, { type: DatabaseType; port
 /** Agent 驱动 → 分类映射（包含变体的 agentKey） */
 export const AGENT_CATEGORY_MAP: Readonly<Record<string, DatabaseCategory>> = (() => {
   const map: Record<string, DatabaseCategory> = {};
-  for (const db of DATABASE_REGISTRY) {
+  for (const db of DATABASE_REGISTRY as readonly DatabaseDef[]) {
     map[db.key] = db.category;
     if (db.drivers) {
       for (const drv of db.drivers) {
@@ -228,7 +226,7 @@ export const AGENT_CATEGORY_MAP: Readonly<Record<string, DatabaseCategory>> = ((
 /** 驱动变体 → 数据库 key 映射 */
 export const DRIVER_PROFILE_DB_MAP: Readonly<Record<string, string>> = (() => {
   const map: Record<string, string> = {};
-  for (const db of DATABASE_REGISTRY) {
+  for (const db of DATABASE_REGISTRY as readonly DatabaseDef[]) {
     if (db.drivers) {
       for (const drv of db.drivers) {
         map[drv.profile] = db.key;
