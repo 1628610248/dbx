@@ -1,69 +1,20 @@
-export const DRIVER_CATEGORIES = [
-  { key: "sql", order: 1, titleKey: "connection.databaseCategorySql" },
-  { key: "analytics", order: 2, titleKey: "connection.databaseCategoryAnalytics" },
-  { key: "domestic", order: 3, titleKey: "connection.databaseCategoryDomestic" },
-  { key: "lightweight", order: 4, titleKey: "connection.databaseCategoryLightweight" },
-  { key: "document", order: 5, titleKey: "connection.databaseCategoryDocument" },
-  { key: "graph_ai", order: 6, titleKey: "connection.databaseCategoryGraphAi" },
-  { key: "timeseries", order: 7, titleKey: "connection.databaseCategoryTimeseries" },
-  { key: "mq", order: 8, titleKey: "connection.databaseCategoryMq" },
-  { key: "registry_config", order: 9, titleKey: "connection.databaseCategoryRegistryConfig" },
-] as const;
+export { DATABASE_CATEGORIES as DRIVER_CATEGORIES } from "@/lib/database/databaseRegistry";
+export type { DatabaseCategory as DriverCategoryKey } from "@/lib/database/databaseRegistry";
+import { AGENT_CATEGORY_MAP, DATABASE_CATEGORIES, type DatabaseCategory } from "@/lib/database/databaseRegistry";
 
-export type DriverCategoryKey = (typeof DRIVER_CATEGORIES)[number]["key"];
-
-const VALID_CATEGORY_KEYS: ReadonlySet<string> = new Set(DRIVER_CATEGORIES.map((cat) => cat.key));
+const VALID_CATEGORY_KEYS: ReadonlySet<string> = new Set(DATABASE_CATEGORIES.map((cat) => cat.key));
 
 const EMPTY = 0;
 
-export const AGENT_DRIVER_CATEGORY_MAP: Readonly<Record<string, DriverCategoryKey>> = {
-  access: "lightweight",
-  bigquery: "analytics",
-  cassandra: "document",
-  dameng: "domestic",
-  databend: "analytics",
-  databricks: "analytics",
-  db2: "sql",
-  duckdb: "lightweight",
-  etcd: "registry_config",
-  exasol: "analytics",
-  firebird: "sql",
-  gbase8a: "domestic",
-  gbase8s: "domestic",
-  goldendb: "domestic",
-  h2: "lightweight",
+// Agent driver keys that don't correspond to a database type (profiles, legacy variants)
+const EXTRA_AGENT_DRIVER_CATEGORIES: Readonly<Record<string, DatabaseCategory>> = {
   "h2-legacy": "lightweight",
-  highgo: "domestic",
-  hive: "analytics",
-  influxdb: "timeseries",
-  informix: "sql",
-  iotdb: "timeseries",
-  iris: "sql",
-  kafka: "mq",
-  kingbase: "domestic",
-  kylin: "analytics",
-  mongodb: "document",
-  neo4j: "graph_ai",
-  "oceanbase-oracle": "domestic",
-  oracle: "sql",
-  oscar: "domestic",
-  prestosql: "analytics",
-  rabbitmq: "mq",
-  rocketmq: "mq",
-  saphana: "analytics",
-  snowflake: "analytics",
-  spark: "analytics",
   "sqlserver-legacy": "sql",
-  sundb: "domestic",
-  tdengine: "timeseries",
-  teradata: "analytics",
-  trino: "analytics",
-  uxdb: "domestic",
-  vastbase: "domestic",
-  vertica: "analytics",
-  xugu: "domestic",
-  yashandb: "domestic",
-  zookeeper: "registry_config",
+};
+
+export const AGENT_DRIVER_CATEGORY_MAP: Readonly<Record<string, DatabaseCategory>> = {
+  ...AGENT_CATEGORY_MAP,
+  ...EXTRA_AGENT_DRIVER_CATEGORIES,
 };
 
 export const getCategoryForAgentDriver = (dbType: string): DriverCategoryKey | "all" => AGENT_DRIVER_CATEGORY_MAP[dbType] ?? "all";
