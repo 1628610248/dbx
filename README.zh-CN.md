@@ -382,8 +382,9 @@ make package
 
 - [官方文档](https://dbxio.com/cn/docs/what-is-dbx) — 功能说明与使用教程
 - [数据库测试实验室](https://dbxio.com/cn/docs/database-lab) — 用于开发和验证的本地数据库配方
+- [系统架构](docs/architecture.zh-CN.md) — 技术栈、核心模块与数据流架构
+- [Web API 参考](docs/web-api-reference.zh-CN.md) — Docker/Web 部署的完整 HTTP API 参考
 - [贡献指南](CONTRIBUTING.zh-CN.md) — 如何认领 Issue 并提交 PR
-- [Web API 参考](docs/content/docs/web-api.cn.mdx) — Docker/Web 部署的 HTTP API
 - [示例代码](examples/) — CLI、MCP、Docker 与 API 示例
 
 ## 社区
